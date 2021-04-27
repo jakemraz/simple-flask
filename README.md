@@ -20,9 +20,10 @@ hello flask 1
 # For AWS EC2 UserData
 ```bash
 #!/bin/bash
+echo start user data
 yum install -y git
 yum install -y python3
 git clone https://github.com/jakemraz/simple-flask.git
 python3 -m pip install -r simple-flask/requirements.txt
-python3 simple-flask/run.py <port> <signature>
+nohup python3 simple-flask/run.py <port> <signature> &
 ```
