@@ -2,28 +2,21 @@
 simple flask application with port control
 
 # How to use
-```python
-$ python3 run.py <port> <signiture>
+```shell
+$ python3 -m pip install -r requirements.txt
+$ gunicorn app:app -b 0.0.0.0:80 --threads 2
 ```
 
-# Example
-```python
-$ $ python3 run.py 80 1
+# Dockerize
+```shell
+# it will make simple_flask:latest image
+$ docker build -t simple_flask .
 ```
-It will run Flask app on 80 port.
-You can get the resulf of 1 if you access this port.
-```
-$ curl 127.0.0.1:80
-hello flask 1
-```
+# Run command
+After dockerize, execute the command below
+```shell
+$ docker run -it -p <local>:80 simple_flask
 
-# For AWS EC2 UserData
-```bash
-#!/bin/bash
-echo start user data
-yum install -y git
-yum install -y python3
-git clone https://github.com/jakemraz/simple-flask.git
-python3 -m pip install -r simple-flask/requirements.txt
-nohup python3 simple-flask/run.py <port> <signature> &
+# for example
+$ docker run -it -p 80:80 simple_flask
 ```
