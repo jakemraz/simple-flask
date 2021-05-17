@@ -1,0 +1,38 @@
+version: 0.2
+
+phases:
+  install:
+    # runtime-versions:
+    #   docker: 18
+    #   java: openjdk11
+    commands:
+      - echo install - begin
+      # - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+      # - apt-get update
+      # - apt-get upgrade -y
+    finally:
+      - echo install phase complete!
+
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR... 
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - ECR=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - TARGET=$DEPLOYMENT_ENV
+      - APP=simple-flask
+
+  build:
+    commands:
+      - echo Build started
+      - docker build -t simple-flask:$TARGET --build-arg ECR=${ECR} --build-arg APP=${APP} .
+      - echo Build done
+
+  post_build:
+    commands:
+      - docker tag simple-flask:$TARGET $ECR_REPO:$TARGET
+      - docker push $ECR_REPO:$TARGET
+
+# artifacts:
+#   files:
+#     - hello
